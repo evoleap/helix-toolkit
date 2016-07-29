@@ -741,7 +741,7 @@ namespace HelixToolkit.Wpf
         }
 
         /// <summary>
-        /// Gets or sets the rectangle that the <see cref="CameraPosition"/> value must remain within.
+        /// Gets or sets the maximum length of the camera's LookDirection vector.
         /// </summary>
         public double? CameraMaximumLookDistance
         {
