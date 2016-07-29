@@ -171,6 +171,14 @@ namespace HelixToolkit.Wpf
                 fov = this.Controller.MaximumFieldOfView;
             }
 
+            double? maxld = this.Controller.CameraMaximumLookDistance;
+            if (maxld.HasValue && maxld.Value > 0)
+            {
+                var minfov = Math.Atan(r / maxld.Value) / 0.5 * 180 / Math.PI;
+                if (fov < minfov)
+                    fov = minfov;
+            }
+
             pcamera.FieldOfView = fov;
             double d2 = r / Math.Tan(0.5 * fov / 180 * Math.PI);
             Vector3D newLookDirection = this.CameraLookDirection;
@@ -313,6 +321,14 @@ namespace HelixToolkit.Wpf
 
             var f = Math.Pow(2.5, delta);
             var newRelativePosition = relativePosition * f;
+
+            var maxLD = this.Controller.CameraMaximumLookDistance;
+            if (maxLD.HasValue && maxLD.Value > 0 && newRelativePosition.Length > maxLD.Value)
+            {
+                newRelativePosition.Normalize();
+                newRelativePosition *= maxLD.Value;
+            }
+
             var newRelativeTarget = relativeTarget * f;
 
             var newTarget = zoomAround - newRelativeTarget;

@@ -99,6 +99,16 @@ namespace HelixToolkit.Wpf
                 new UIPropertyMetadata(null));
 
         /// <summary>
+        /// Identifies the <see cref="CameraMaximumLookDistance"/> dependency property.
+        /// </summary>
+        public static readonly DependencyProperty CameraMaximumLookDistanceProperty =
+            DependencyProperty.Register(
+                nameof(CameraMaximumLookDistance),
+                typeof(double?),
+                typeof(HelixViewport3D),
+                new UIPropertyMetadata((Rect3D?)null));
+
+        /// <summary>
         /// Identifies the <see cref="ChangeFieldOfViewCursor"/> dependency property.
         /// </summary>
         public static readonly DependencyProperty ChangeFieldOfViewCursorProperty =
@@ -1246,6 +1256,22 @@ namespace HelixToolkit.Wpf
             set
             {
                 this.SetValue(CameraPathProperty, value);
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the rectangle that the <see cref="CameraPosition"/> value must remain within.
+        /// </summary>
+        public double? CameraMaximumLookDistance
+        {
+            get
+            {
+                return (double?)this.GetValue(CameraMaximumLookDistanceProperty);
+            }
+
+            set
+            {
+                this.SetValue(CameraMaximumLookDistanceProperty, value);
             }
         }
 

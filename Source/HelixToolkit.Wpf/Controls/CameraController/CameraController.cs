@@ -70,6 +70,16 @@ namespace HelixToolkit.Wpf
                 new UIPropertyMetadata(null));
 
         /// <summary>
+        /// Identifies the <see cref="CameraMaximumLookDistance"/> dependency property.
+        /// </summary>
+        public static readonly DependencyProperty CameraMaximumLookDistanceProperty =
+            DependencyProperty.Register(
+                nameof(CameraMaximumLookDistance),
+                typeof(double?),
+                typeof(CameraController),
+                new UIPropertyMetadata(null, (s, e) => ((CameraController)s).OnCameraMaximumLookDistanceChanged()));
+
+        /// <summary>
         /// Identifies the <see cref="DefaultCamera"/> dependency property.
         /// </summary>
         public static readonly DependencyProperty DefaultCameraProperty = DependencyProperty.Register(
@@ -727,6 +737,22 @@ namespace HelixToolkit.Wpf
             set
             {
                 this.SetValue(CameraPathProperty, value);
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the rectangle that the <see cref="CameraPosition"/> value must remain within.
+        /// </summary>
+        public double? CameraMaximumLookDistance
+        {
+            get
+            {
+                return (double?)this.GetValue(CameraMaximumLookDistanceProperty);
+            }
+
+            set
+            {
+                this.SetValue(CameraMaximumLookDistanceProperty, value);
             }
         }
 
@@ -2141,6 +2167,19 @@ namespace HelixToolkit.Wpf
         {
             this.cameraHistory.Clear();
             this.PushCameraSetting();
+        }
+
+        private void OnCameraMaximumLookDistanceChanged()
+        {
+            var maxld = this.CameraMaximumLookDistance;
+            if (maxld.HasValue && maxld.Value > 0 && this.Camera != null)
+            {
+                var curld = this.CameraLookDirection.Length;
+                if (curld > maxld.Value)
+                {
+                    this.Camera.LookAt(this.CameraTarget, maxld.Value, 0);
+                }
+            }
         }
 
         /// <summary>
