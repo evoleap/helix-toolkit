@@ -89,6 +89,16 @@ namespace HelixToolkit.Wpf
                 new UIPropertyMetadata(CameraRotationMode.Turntable, (s, e) => ((HelixViewport3D)s).OnCameraRotationModeChanged()));
 
         /// <summary>
+        /// Identifies the <see cref="CameraPath"/> dependency property.
+        /// </summary>
+        public static readonly DependencyProperty CameraPathProperty =
+            DependencyProperty.Register(
+                nameof(CameraPath),
+                typeof(Point3DCollection),
+                typeof(HelixViewport3D),
+                new UIPropertyMetadata(null));
+
+        /// <summary>
         /// Identifies the <see cref="ChangeFieldOfViewCursor"/> dependency property.
         /// </summary>
         public static readonly DependencyProperty ChangeFieldOfViewCursorProperty =
@@ -1220,6 +1230,22 @@ namespace HelixToolkit.Wpf
             set
             {
                 this.SetValue(CameraRotationModeProperty, value);
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the path the camera follows when <see cref="CameraMode"/> is <see cref="CameraMode.InspectPath"/>.
+        /// </summary>
+        public Point3DCollection CameraPath
+        {
+            get
+            {
+                return (Point3DCollection)this.GetValue(CameraPathProperty);
+            }
+
+            set
+            {
+                this.SetValue(CameraPathProperty, value);
             }
         }
 

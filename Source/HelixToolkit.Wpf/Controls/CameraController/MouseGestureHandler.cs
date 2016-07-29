@@ -141,6 +141,17 @@ namespace HelixToolkit.Wpf
         }
 
         /// <summary>
+        /// Gets the camera path
+        /// </summary>
+        protected Point3DCollection CameraPath
+        {
+            get
+            {
+                return this.Controller.CameraPath;
+            }
+        }
+
+        /// <summary>
         /// Gets or sets the controller.
         /// </summary>
         protected CameraController Controller { get; set; }

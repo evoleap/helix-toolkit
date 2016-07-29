@@ -95,6 +95,11 @@ namespace HelixToolkit.Wpf
                 return;
             }
 
+            if (this.CameraMode == CameraMode.InspectPath)
+            {
+                return;
+            }
+
             if (rectangle.Width < 10 || rectangle.Height < 10)
             {
                 return;

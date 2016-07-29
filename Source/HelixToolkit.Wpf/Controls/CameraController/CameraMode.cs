@@ -27,6 +27,12 @@ namespace HelixToolkit.Wpf
         /// <summary>
         /// Fixed camera target, change FOV when zooming.
         /// </summary>
-        FixedPosition
+        FixedPosition,
+
+        /// <summary>
+        /// Orbits around a point and follows a fixed path when panning.
+        /// </summary>
+        InspectPath
+
     }
 }

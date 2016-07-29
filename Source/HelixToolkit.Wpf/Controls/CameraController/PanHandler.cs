@@ -9,6 +9,8 @@
 
 namespace HelixToolkit.Wpf
 {
+    using System;
+    using System.Collections.Generic;
     using System.Windows;
     using System.Windows.Input;
     using System.Windows.Media.Media3D;
@@ -73,7 +75,99 @@ namespace HelixToolkit.Wpf
                 return;
             }
 
+            if (this.CameraMode == CameraMode.InspectPath)
+            {
+                if (PanAlongPath(delta))
+                {
+                    Controller.ShowTargetAdorner(this.Project(CameraTarget));
+                    return;
+                }
+            }
+
             this.CameraPosition += delta;
+        }
+
+        private bool PanAlongPath(Vector3D delta)
+        {
+            var path = this.CameraPath;
+            if (path == null)
+                return false;
+
+            var start = this.CameraTarget;
+            var end = start + delta;
+
+            var mouseSegment = GetSegmentNearestPoint(path, end);
+            if (!mouseSegment.HasValue)
+                return false;
+
+            // The new delta has the same distance, but a different direction, without going outside of segment bounds.
+            var newDelta = mouseSegment.Value.NearestPoint - start;
+            if (newDelta.Length > 0)
+            {
+                newDelta.Normalize();
+                newDelta *= delta.Length;
+                var newEnd = ConstrainToSegment(mouseSegment.Value.Segment, start + newDelta);
+                newDelta = newEnd - start;
+                this.CameraPosition += newDelta;
+            }
+
+            return true;
+        }
+        private Point3D ConstrainToSegment(PathSegment segment, Point3D point)
+        {
+            return GetNearestPointInSegment(segment, point);
+        }
+        private PathSegmentPointDistance? GetSegmentNearestPoint(Point3DCollection path, Point3D point)
+        {
+            PathSegmentPointDistance? result = null;
+            foreach (var p in EnumerateNearestPoints(path, point))
+            {
+                if (!result.HasValue || p.DistanceSquared < result.Value.DistanceSquared)
+                    result = p;
+            }
+            return result;
+        }
+        private IEnumerable<PathSegmentPointDistance> EnumerateNearestPoints(Point3DCollection path, Point3D point)
+        {
+            foreach (var seg in EnumerateSegments(path))
+            {
+                if (seg.Start != seg.End)
+                {
+                    var nearestPoint = GetNearestPointInSegment(seg, point);
+                    yield return new PathSegmentPointDistance()
+                    {
+                        Segment = seg,
+                        NearestPoint = nearestPoint,
+                        DistanceSquared = (nearestPoint - point).LengthSquared
+                    };
+                }
+            }
+        }
+        private IEnumerable<PathSegment> EnumerateSegments(Point3DCollection path)
+        {
+            for (int i = 0; i < path.Count; i += 2)
+                yield return new PathSegment() { Start = path[i], End = path[i + 1] };
+        }
+        private Point3D GetNearestPointInSegment(PathSegment segment, Point3D point)
+        {
+            Vector3D x10 = segment.Start - point;
+            Vector3D x21 = segment.End - segment.Start;
+            // http://mathworld.wolfram.com/Point-LineDistance3-Dimensional.html
+            double t = -Vector3D.DotProduct(x10, x21) / x21.LengthSquared;
+            t = Math.Max(0, Math.Min(1, t));
+            return segment.Start + x21 * t;
+        }
+        private struct PathSegment
+        {
+            public Point3D Start;
+            public Point3D End;
+            public Vector3D Vector => End - Start;
+        }
+        private struct PathSegmentPointDistance
+        {
+            public PathSegment Segment;
+            public Point3D NearestPoint;
+            public double DistanceSquared;
         }
 
         /// <summary>
@@ -149,6 +243,21 @@ namespace HelixToolkit.Wpf
         {
             var speed = (this.LastPoint - this.MouseDownPoint) * (40.0 / elapsedTime);
             this.Controller.AddPanForce(speed.X, speed.Y);
+        }
+
+        /// <summary>
+        /// Occurs when the manipulation is completed.
+        /// </summary>
+        /// <param name="e">
+        /// The <see cref="ManipulationEventArgs"/> instance containing the event data.
+        /// </param>
+        public override void Completed(ManipulationEventArgs e)
+        {
+            base.Completed(e);
+            if (this.CameraMode == CameraMode.InspectPath)
+            {
+                Controller.HideTargetAdorner();
+            }
         }
 
     }

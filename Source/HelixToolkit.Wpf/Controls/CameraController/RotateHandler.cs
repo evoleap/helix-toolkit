@@ -45,6 +45,11 @@ namespace HelixToolkit.Wpf
         private Point3D rotationPoint3D;
 
         /// <summary>
+        /// Gets whether the camera mode is <see cref="CameraMode.Inspect"/> or <see cref="CameraMode.InspectPath"/>.
+        /// </summary>
+        protected bool IsCameraModeInspect => CameraMode == CameraMode.Inspect || CameraMode == CameraMode.InspectPath;
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="RotateHandler"/> class.
         /// </summary>
         /// <param name="controller">
@@ -179,7 +184,7 @@ namespace HelixToolkit.Wpf
             Vector3D relativePosition = rotateAround - this.CameraPosition;
 
             double d = -1;
-            if (this.CameraMode != CameraMode.Inspect)
+            if (!this.IsCameraModeInspect)
             {
                 d = 0.2;
             }
@@ -213,7 +218,7 @@ namespace HelixToolkit.Wpf
             Vector3D newLookDirection = newTarget - newPosition;
 
             this.CameraLookDirection = newLookDirection;
-            if (CameraMode == CameraMode.Inspect)
+            if (this.IsCameraModeInspect)
             {
                 this.CameraPosition = newPosition;
             }
@@ -242,7 +247,7 @@ namespace HelixToolkit.Wpf
             right.Normalize();
 
             double d = -0.5;
-            if (this.CameraMode != CameraMode.Inspect)
+            if (!this.IsCameraModeInspect)
             {
                 d *= -0.2;
             }
@@ -265,7 +270,7 @@ namespace HelixToolkit.Wpf
             Point3D newPosition = rotateAround - newRelativePosition;
 
             this.CameraLookDirection = newTarget - newPosition;
-            if (CameraMode == CameraMode.Inspect)
+            if (this.IsCameraModeInspect)
             {
                 this.CameraPosition = newPosition;
             }
@@ -306,7 +311,7 @@ namespace HelixToolkit.Wpf
                     break;
             }
 
-            if (this.Controller.CameraMode == CameraMode.Inspect)
+            if (this.IsCameraModeInspect)
             {
                 this.Controller.ShowTargetAdorner(this.rotationPoint);
             }
@@ -470,7 +475,7 @@ namespace HelixToolkit.Wpf
             var newPosition = rotateAround - newRelativePosition;
 
             this.CameraLookDirection = newTarget - newPosition;
-            if (CameraMode == CameraMode.Inspect)
+            if (this.IsCameraModeInspect)
             {
                 this.CameraPosition = newPosition;
             }
@@ -540,7 +545,7 @@ namespace HelixToolkit.Wpf
             var newPosition = rotateAround - newRelativePosition;
 
             this.CameraLookDirection = newTarget - newPosition;
-            if (CameraMode == CameraMode.Inspect)
+            if (this.IsCameraModeInspect)
             {
                 this.CameraPosition = newPosition;
             }
