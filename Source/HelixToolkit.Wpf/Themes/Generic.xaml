@@ -91,6 +91,7 @@
                                     <local:InputBindingX Gezture="{Binding FrontViewGesture, RelativeSource={RelativeSource TemplatedParent}}"  Command="{x:Static local:CameraController.FrontViewCommand}"/>
                                     <local:InputBindingX Gezture="{Binding BackViewGesture, RelativeSource={RelativeSource TemplatedParent}}"  Command="{x:Static local:CameraController.BackViewCommand}"/>
                                     <local:InputBindingX Gezture="{Binding OrthographicToggleGesture, RelativeSource={RelativeSource TemplatedParent}}"  Command="{x:Static local:HelixViewport3D.OrthographicToggleCommand}"/>
+                                    <local:InputBindingX Gezture="{Binding PanPathGesture, RelativeSource={RelativeSource TemplatedParent}}" Command="{x:Static local:CameraController.PanPathCommand}" />
                                 </local:CameraController.InputBindings>
                                 <Grid x:Name="PART_ViewportGrid">
                                     <AdornerDecorator x:Name="PART_AdornerLayer" DataContext="{TemplateBinding DataContext}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" IsHitTestVisible="False" />

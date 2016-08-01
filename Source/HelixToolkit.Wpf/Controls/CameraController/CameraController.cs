@@ -80,6 +80,16 @@ namespace HelixToolkit.Wpf
                 new UIPropertyMetadata(null, (s, e) => ((CameraController)s).OnCameraMaximumLookDistanceChanged()));
 
         /// <summary>
+        /// Identifies the <see cref="CameraPathOffset"/> dependency property.
+        /// </summary>
+        public static readonly DependencyProperty CameraPathOffsetProperty =
+            DependencyProperty.Register(
+                nameof(CameraPathOffset),
+                typeof(Vector3D),
+                typeof(CameraController),
+                new UIPropertyMetadata(new Vector3D(), (s, e) => ((CameraController)s).OnCameraPathOffsetChanged((Vector3D)e.OldValue, (Vector3D)e.NewValue)));
+
+        /// <summary>
         /// Identifies the <see cref="DefaultCamera"/> dependency property.
         /// </summary>
         public static readonly DependencyProperty DefaultCameraProperty = DependencyProperty.Register(
@@ -332,6 +342,11 @@ namespace HelixToolkit.Wpf
         private RotateHandler changeLookAtHandler;
 
         /// <summary>
+        /// The handler used when changing the origin of the camera path.
+        /// </summary>
+        private PanHandler changePathOffsetHandler;
+
+        /// <summary>
         /// The is spinning flag.
         /// </summary>
         private bool isSpinning;
@@ -445,6 +460,7 @@ namespace HelixToolkit.Wpf
             FrontViewCommand = new RoutedCommand();
             LeftViewCommand = new RoutedCommand();
             PanCommand = new RoutedCommand();
+            PanPathCommand = new RoutedCommand();
             ResetCameraCommand = new RoutedCommand();
             RightViewCommand = new RoutedCommand();
             RotateCommand = new RoutedCommand();
@@ -538,6 +554,11 @@ namespace HelixToolkit.Wpf
         /// Gets the pan command.
         /// </summary>
         public static RoutedCommand PanCommand { get; private set; }
+
+        /// <summary>
+        /// Gets the pan path command.
+        /// </summary>
+        public static RoutedCommand PanPathCommand { get; private set; }
 
         /// <summary>
         /// Gets the reset camera command.
@@ -753,6 +774,24 @@ namespace HelixToolkit.Wpf
             set
             {
                 this.SetValue(CameraMaximumLookDistanceProperty, value);
+            }
+        }
+
+        /// <summary>
+        /// If <see cref="CameraMode"/> is <see cref="CameraMode.InspectPath"/>, gets or sets the offset from the current
+        /// camera target to the current path-walking point.  This allows the walking the path without requiring the
+        /// path to be in the center of the viewport.
+        /// </summary>
+        public Vector3D CameraPathOffset
+        {
+            get
+            {
+                return (Vector3D)this.GetValue(CameraPathOffsetProperty);
+            }
+
+            set
+            {
+                this.SetValue(CameraPathOffsetProperty, value);
             }
         }
 
@@ -1686,6 +1725,7 @@ namespace HelixToolkit.Wpf
 
             if (this.targetAdorner != null)
             {
+                ((TargetSymbolAdorner)this.targetAdorner).Position = position;
                 return;
             }
 
@@ -2127,6 +2167,7 @@ namespace HelixToolkit.Wpf
             this.zoomHandler = new ZoomHandler(this);
             this.panHandler = new PanHandler(this);
             this.changeFieldOfViewHandler = new ZoomHandler(this, true);
+            this.changePathOffsetHandler = new PanHandler(this, true);
 
             this.CommandBindings.Add(new CommandBinding(ZoomRectangleCommand, this.zoomRectangleHandler.Execute));
             this.CommandBindings.Add(new CommandBinding(ZoomExtentsCommand, this.ZoomExtentsHandler));
@@ -2137,6 +2178,7 @@ namespace HelixToolkit.Wpf
             this.CommandBindings.Add(new CommandBinding(ChangeLookAtCommand, this.changeLookAtHandler.Execute));
             this.CommandBindings.Add(
                 new CommandBinding(ChangeFieldOfViewCommand, this.changeFieldOfViewHandler.Execute));
+            this.CommandBindings.Add(new CommandBinding(PanPathCommand, this.changePathOffsetHandler.Execute));
 
             this.CommandBindings.Add(new CommandBinding(TopViewCommand, this.TopViewHandler));
             this.CommandBindings.Add(new CommandBinding(BottomViewCommand, this.BottomViewHandler));
@@ -2179,6 +2221,15 @@ namespace HelixToolkit.Wpf
                 {
                     this.Camera.LookAt(this.CameraTarget, maxld.Value, 0);
                 }
+            }
+        }
+
+        private void OnCameraPathOffsetChanged(Vector3D oldValue, Vector3D newValue)
+        {
+            if (this.CameraMode == CameraMode.InspectPath)
+            {
+                Vector3D offsetChange = newValue - oldValue;
+                CameraPosition -= offsetChange;
             }
         }
 

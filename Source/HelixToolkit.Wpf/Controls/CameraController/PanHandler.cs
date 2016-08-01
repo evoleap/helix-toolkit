@@ -26,14 +26,30 @@ namespace HelixToolkit.Wpf
         private Point3D panPoint3D;
 
         /// <summary>
+        /// Whether this handler changes the camera path offset.
+        /// </summary>
+        private bool changePathOffset;
+
+        /// <summary>
+        /// Gets or sets the camera path offset.
+        /// </summary>
+        protected Vector3D CameraPathOffset
+        {
+            get { return this.Controller.CameraPathOffset; }
+            set { this.Controller.CameraPathOffset = value; }
+        }
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="PanHandler"/> class.
         /// </summary>
         /// <param name="controller">
         /// The controller.
         /// </param>
-        public PanHandler(CameraController controller)
+        /// <param name="changePathOffset">Whether this handler changes the path offset</param>
+        public PanHandler(CameraController controller, bool changePathOffset = false)
             : base(controller)
         {
+            this.changePathOffset = changePathOffset;
         }
 
         /// <summary>
@@ -77,10 +93,19 @@ namespace HelixToolkit.Wpf
 
             if (this.CameraMode == CameraMode.InspectPath)
             {
-                if (PanAlongPath(delta))
+                if (this.changePathOffset)
                 {
-                    Controller.ShowTargetAdorner(this.Project(CameraTarget));
+                    this.CameraPathOffset -= delta;
+                    Controller.ShowTargetAdorner(this.Project(CameraTarget + CameraPathOffset));
                     return;
+                }
+                else
+                {
+                    if (PanAlongPath(delta))
+                    {
+                        Controller.ShowTargetAdorner(this.Project(CameraTarget + CameraPathOffset));
+                        return;
+                    }
                 }
             }
 
@@ -93,7 +118,7 @@ namespace HelixToolkit.Wpf
             if (path == null)
                 return false;
 
-            var start = this.CameraTarget;
+            var start = this.CameraTarget + CameraPathOffset;
             var end = start + delta;
 
             var mouseSegment = GetSegmentNearestPoint(path, end);

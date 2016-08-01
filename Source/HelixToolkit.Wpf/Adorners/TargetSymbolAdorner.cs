@@ -22,6 +22,12 @@ namespace HelixToolkit.Wpf
     /// </remarks>
     public class TargetSymbolAdorner : Adorner
     {
+
+        /// <summary>
+        /// The position
+        /// </summary>
+        private Point position;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="TargetSymbolAdorner"/> class.
         /// </summary>
@@ -34,14 +40,22 @@ namespace HelixToolkit.Wpf
         public TargetSymbolAdorner(UIElement adornedElement, Point position)
             : base(adornedElement)
         {
-            this.Position = position;
+            this.position = position;
         }
 
         /// <summary>
         /// Gets or sets the position.
         /// </summary>
         /// <value>The position.</value>
-        public Point Position { get; set; }
+        public Point Position
+        {
+            get { return this.position; }
+            set
+            {
+                this.position = value;
+                this.InvalidateVisual();
+            }
+        }
 
         /// <summary>
         /// Called when rendering.

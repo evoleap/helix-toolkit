@@ -512,6 +512,15 @@ namespace HelixToolkit.Wpf
             new UIPropertyMetadata(new MouseGesture(MouseAction.RightClick, ModifierKeys.Shift)));
 
         /// <summary>
+        /// Identifies the <see cref="PanPathGesture"/> dependency property.
+        /// </summary>
+        public static readonly DependencyProperty PanPathGestureProperty = DependencyProperty.Register(
+            "PanPathGesture",
+            typeof(MouseGesture),
+            typeof(HelixViewport3D),
+            new UIPropertyMetadata(new MouseGesture(MouseAction.RightClick, ModifierKeys.Shift | ModifierKeys.Alt)));
+
+        /// <summary>
         /// Identifies the <see cref="ResetCameraGesture"/> dependency property.
         /// </summary>
         public static readonly DependencyProperty ResetCameraGestureProperty =
@@ -2218,6 +2227,25 @@ namespace HelixToolkit.Wpf
             set
             {
                 this.SetValue(PanGesture2Property, value);
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the pan path gesture.
+        /// </summary>
+        /// <value>
+        /// The pan gesture.
+        /// </value>
+        public MouseGesture PanPathGesture
+        {
+            get
+            {
+                return (MouseGesture)this.GetValue(PanPathGestureProperty);
+            }
+
+            set
+            {
+                this.SetValue(PanPathGestureProperty, value);
             }
         }
 
