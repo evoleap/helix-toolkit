@@ -36,8 +36,8 @@
         </DockPanel>
         <h:HelixViewport3D x:Name="ViewPort3D" InfiniteSpin="True" ShowFrameRate="True">
             <h:DefaultLights />
-            <h:LinesVisual3D Points="{Binding LinePoints}" Color="Blue"/>
-            <h:PointsVisual3D Points="{Binding Points}" Color="Red" Size="6" />
+            <h:LinesVisual3D Points="{Binding LinePoints}" EmissiveBrush="Blue"/>
+            <h:PointsVisual3D Points="{Binding Points}" EmissiveBrush="Red" Size="6" />
         </h:HelixViewport3D>
     </DockPanel>
 </Window>

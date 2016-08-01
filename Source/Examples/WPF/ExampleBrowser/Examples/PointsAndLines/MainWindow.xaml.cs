@@ -123,7 +123,7 @@ namespace PointsAndLinesDemo
         {
             if (this.ShowLinesVisual3D && this.linesVisual == null)
             {
-                this.linesVisual = new LinesVisual3D { Color = Colors.Blue };
+                this.linesVisual = new LinesVisual3D { EmissiveBrush = Brushes.Blue };
                 View1.Children.Add(this.linesVisual);
             }
 
@@ -136,7 +136,7 @@ namespace PointsAndLinesDemo
 
             if (this.ShowPointsVisual3D && this.pointsVisual == null)
             {
-                this.pointsVisual = new PointsVisual3D { Color = Colors.Red, Size = 6 };
+                this.pointsVisual = new PointsVisual3D { EmissiveBrush = Brushes.Red, Size = 6 };
                 View1.Children.Add(this.pointsVisual);
             }
 

@@ -66,7 +66,7 @@
             <helix:SphereVisual3D Radius="5"/>
             <helix:SphereVisual3D Center="5,0,0" Radius="1" Fill="White"/>
             <helix:GridLinesVisual3D/>
-            <helix:LinesVisual3D x:Name="pathLines" Points="0,0,0 20,20,0 20,20,0 20,40,0 20,40,0 0,60,0" Color="Green" Thickness="3" />
+            <helix:LinesVisual3D x:Name="pathLines" Points="0,0,0 20,20,0 20,20,0 20,40,0 20,40,0 0,60,0" EmissiveBrush="Green" Thickness="3" />
         </helix:HelixViewport3D>
     </DockPanel>
 </Window>

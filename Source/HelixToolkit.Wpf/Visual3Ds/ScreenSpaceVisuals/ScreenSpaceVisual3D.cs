@@ -20,10 +20,16 @@ namespace HelixToolkit.Wpf
     public abstract class ScreenSpaceVisual3D : RenderingModelVisual3D
     {
         /// <summary>
-        /// Identifies the <see cref="Color"/> dependency property.
+        /// Identifies the <see cref="EmissiveBrush"/> dependency property.
         /// </summary>
-        public static readonly DependencyProperty ColorProperty = DependencyProperty.Register(
-            "Color", typeof(Color), typeof(ScreenSpaceVisual3D), new UIPropertyMetadata(Colors.Black, ColorChanged));
+        public static readonly DependencyProperty EmissiveBrushProperty = DependencyProperty.Register(
+            "EmissiveBrush", typeof(Brush), typeof(ScreenSpaceVisual3D), new UIPropertyMetadata(Brushes.Black, BrushChanged));
+
+        /// <summary>
+        /// Identifies the <see cref="DiffuseBrush"/> dependency property.
+        /// </summary>
+        public static readonly DependencyProperty DiffuseBrushProperty = DependencyProperty.Register(
+            "DiffuseBrush", typeof(Brush), typeof(ScreenSpaceVisual3D), new UIPropertyMetadata(Brushes.Black, BrushChanged));
 
         /// <summary>
         /// Identifies the <see cref="DepthOffset"/> dependency property.
@@ -56,25 +62,44 @@ namespace HelixToolkit.Wpf
             this.Model = new GeometryModel3D { Geometry = this.Mesh };
             this.Content = this.Model;
             this.Points = new Point3DCollection();
-            this.ColorChanged();
+            this.BrushChanged();
         }
 
         /// <summary>
-        /// Gets or sets the color.
+        /// Gets or sets the brush applied to the emissive material.
         /// </summary>
         /// <value>
-        /// The color.
+        /// The brush.
         /// </value>
-        public Color Color
+        public Brush EmissiveBrush
         {
             get
             {
-                return (Color)this.GetValue(ColorProperty);
+                return (Brush)this.GetValue(EmissiveBrushProperty);
             }
 
             set
             {
-                this.SetValue(ColorProperty, value);
+                this.SetValue(EmissiveBrushProperty, value);
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the brush applied to the diffuse material.
+        /// </summary>
+        /// <value>
+        /// The brush.
+        /// </value>
+        public Brush DiffuseBrush
+        {
+            get
+            {
+                return (Brush)this.GetValue(DiffuseBrushProperty);
+            }
+
+            set
+            {
+                this.SetValue(DiffuseBrushProperty, value);
             }
         }
 
@@ -268,9 +293,9 @@ namespace HelixToolkit.Wpf
         /// <param name="e">
         /// The <see cref="DependencyPropertyChangedEventArgs"/> instance containing the event data.
         /// </param>
-        private static void ColorChanged(object sender, DependencyPropertyChangedEventArgs e)
+        private static void BrushChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
-            ((ScreenSpaceVisual3D)sender).ColorChanged();
+            ((ScreenSpaceVisual3D)sender).BrushChanged();
         }
 
         /// <summary>
@@ -286,11 +311,19 @@ namespace HelixToolkit.Wpf
         /// <summary>
         /// Changes the material when the color changed.
         /// </summary>
-        private void ColorChanged()
+        private void BrushChanged()
         {
             var mg = new MaterialGroup();
-            mg.Children.Add(new DiffuseMaterial(Brushes.Black));
-            mg.Children.Add(new EmissiveMaterial(new SolidColorBrush(this.Color)));
+            Brush db = this.DiffuseBrush;
+            if (db != null)
+            {
+                mg.Children.Add(new DiffuseMaterial(db));
+            }
+            Brush eb = this.EmissiveBrush;
+            if (eb != null)
+            {
+                mg.Children.Add(new EmissiveMaterial(eb));
+            }
             mg.Freeze();
             this.Model.Material = mg;
         }
