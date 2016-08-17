@@ -42,6 +42,8 @@
                                                     CameraRotationMode="{TemplateBinding CameraRotationMode}" 
                                                     CameraMode="{TemplateBinding CameraMode}" 
                                                     CameraPath="{TemplateBinding CameraPath}"
+                                                    CameraPlanePoint="{TemplateBinding CameraPlanePoint}"
+                                                    CameraPlaneNormal="{TemplateBinding CameraPlaneNormal}"
                                                     CameraMaximumLookDistance="{TemplateBinding CameraMaximumLookDistance}"
                                                     RotateAroundMouseDownPoint="{TemplateBinding RotateAroundMouseDownPoint}" 
                                                     MinimumFieldOfView="{TemplateBinding MinimumFieldOfView}"

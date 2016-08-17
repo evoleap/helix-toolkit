@@ -47,7 +47,7 @@ namespace HelixToolkit.Wpf
         /// <summary>
         /// Gets whether the camera mode is <see cref="CameraMode.Inspect"/> or <see cref="CameraMode.InspectPath"/>.
         /// </summary>
-        protected bool IsCameraModeInspect => CameraMode == CameraMode.Inspect || CameraMode == CameraMode.InspectPath;
+        protected bool IsCameraModeInspect => CameraMode == CameraMode.Inspect || CameraMode == CameraMode.InspectPath || CameraMode == CameraMode.InspectPlane;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="RotateHandler"/> class.

@@ -39,6 +39,16 @@ namespace HelixToolkit.Wpf
             set { this.Controller.CameraPathOffset = value; }
         }
 
+        protected Point3D CameraPlanePoint
+        {
+            get { return this.Controller.CameraPlanePoint; }
+        }
+
+        protected Vector3D CameraPlaneNormal
+        {
+            get { return this.Controller.CameraPlaneNormal; }
+        }
+
         /// <summary>
         /// Initializes a new instance of the <see cref="PanHandler"/> class.
         /// </summary>
@@ -109,6 +119,12 @@ namespace HelixToolkit.Wpf
                 }
             }
 
+            if (this.CameraMode == CameraMode.InspectPlane)
+            {
+                PanAlongPlane(delta);
+                return;
+            }
+
             this.CameraPosition += delta;
         }
 
@@ -117,7 +133,10 @@ namespace HelixToolkit.Wpf
             var path = this.CameraPath;
             if (path == null)
                 return false;
-
+            return PanAlongPath(delta, path);
+        }
+        private bool PanAlongPath(Vector3D delta, Point3DCollection path)
+        {
             var start = this.CameraTarget + CameraPathOffset;
             var end = start + delta;
 
@@ -193,6 +212,58 @@ namespace HelixToolkit.Wpf
             public PathSegment Segment;
             public Point3D NearestPoint;
             public double DistanceSquared;
+        }
+
+        private void PanAlongPlane(Vector3D delta)
+        {
+            if (delta.Length == 0)
+                return;
+
+            var plane = new Plane3D(CameraPlanePoint, CameraPlaneNormal);
+            var startPosition = this.CameraPosition;
+            var cameraLookDir = this.CameraLookDirection;
+            var moveOrigin = plane.LineIntersection(startPosition, startPosition + cameraLookDir);
+            if (!moveOrigin.HasValue)
+                return;
+
+            var endPosition = this.CameraPosition + delta;
+            var moveFinal = plane.LineIntersection(endPosition, endPosition + cameraLookDir);
+            if (!moveFinal.HasValue)
+                return;
+
+            var moveLineDir = moveFinal.Value - moveOrigin.Value;
+            PanAlongLine(delta, moveOrigin.Value, moveLineDir);
+        }
+        private void PanAlongLine(Vector3D delta, Point3D pointOnLine, Vector3D lineDirection)
+        {
+            var start = this.CameraTarget + CameraPathOffset;
+            var end = start + delta;
+
+            var mouseSegment = GetNearestPointOnLine(end, pointOnLine, lineDirection);
+
+            // The new delta has the same distance, but a different direction, without going outside of segment bounds.
+            var newDelta = mouseSegment.NearestPoint - start;
+            if (newDelta.Length > 0)
+            {
+                newDelta.Normalize();
+                newDelta *= delta.Length;
+                this.CameraPosition += newDelta;
+            }
+        }
+        private PathSegmentPointDistance GetNearestPointOnLine(Point3D point, Point3D pointOnLine, Vector3D lineDirection)
+        {
+            var seg = new PathSegment()
+            {
+                Start = pointOnLine,
+                End = pointOnLine + lineDirection
+            };
+            var nearestPoint = GetNearestPointInSegment(seg, point);
+            return new PathSegmentPointDistance()
+            {
+                Segment = seg,
+                NearestPoint = nearestPoint,
+                DistanceSquared = (nearestPoint - point).LengthSquared
+            };
         }
 
         /// <summary>

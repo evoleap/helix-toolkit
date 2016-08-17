@@ -99,6 +99,26 @@ namespace HelixToolkit.Wpf
                 new UIPropertyMetadata(null));
 
         /// <summary>
+        /// Identifies the <see cref="CameraPlanePoint"/> dependency property.
+        /// </summary>
+        public static readonly DependencyProperty CameraPlanePointProperty =
+            DependencyProperty.Register(
+                nameof(CameraPlanePoint),
+                typeof(Point3D),
+                typeof(HelixViewport3D),
+                new UIPropertyMetadata(new Point3D()));
+
+        /// <summary>
+        /// Identifies the <see cref="CameraPlaneNormal"/> dependency property.
+        /// </summary>
+        public static readonly DependencyProperty CameraPlaneNormalProperty =
+            DependencyProperty.Register(
+                nameof(CameraPlaneNormal),
+                typeof(Vector3D),
+                typeof(HelixViewport3D),
+                new UIPropertyMetadata(new Vector3D(1, 0, 0)));
+
+        /// <summary>
         /// Identifies the <see cref="CameraMaximumLookDistance"/> dependency property.
         /// </summary>
         public static readonly DependencyProperty CameraMaximumLookDistanceProperty =
@@ -1265,6 +1285,38 @@ namespace HelixToolkit.Wpf
             set
             {
                 this.SetValue(CameraPathProperty, value);
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the point used to define the plane the camera follows when <see cref="CameraMode"/> equals <see cref="CameraMode.InspectPlane"/>.
+        /// </summary>
+        public Point3D CameraPlanePoint
+        {
+            get
+            {
+                return (Point3D)this.GetValue(CameraPlanePointProperty);
+            }
+
+            set
+            {
+                this.SetValue(CameraPlanePointProperty, value);
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the normal vector used to define the plane the camera follows when <see cref="CameraMode"/> equals <see cref="CameraMode.InspectPlane"/>.
+        /// </summary>
+        public Vector3D CameraPlaneNormal
+        {
+            get
+            {
+                return (Vector3D)this.GetValue(CameraPlaneNormalProperty);
+            }
+
+            set
+            {
+                this.SetValue(CameraPlaneNormalProperty, value);
             }
         }
 

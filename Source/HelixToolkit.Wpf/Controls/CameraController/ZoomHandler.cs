@@ -70,6 +70,7 @@ namespace HelixToolkit.Wpf
             {
                 case CameraMode.Inspect:
                 case CameraMode.InspectPath:
+                case CameraMode.InspectPlane:
                     this.ChangeCameraDistance(delta, zoomAround);
                     break;
                 case CameraMode.WalkAround:
@@ -96,6 +97,7 @@ namespace HelixToolkit.Wpf
             {
                 case CameraMode.Inspect:
                 case CameraMode.InspectPath:
+                case CameraMode.InspectPlane:
                 case CameraMode.WalkAround:
                     this.CameraPosition += (x * delta.X) + (y * delta.Y) + (z * delta.Z);
                     break;
@@ -123,6 +125,7 @@ namespace HelixToolkit.Wpf
                 case CameraMode.WalkAround:
                 case CameraMode.Inspect:
                 case CameraMode.InspectPath:
+                case CameraMode.InspectPlane:
                 case CameraMode.FixedPosition:
                     this.ChangeCameraDistance(delta, zoomAround);
 

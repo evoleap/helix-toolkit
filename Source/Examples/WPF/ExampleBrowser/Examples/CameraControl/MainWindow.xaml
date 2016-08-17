@@ -58,7 +58,7 @@
             <pt:EnumMenuItem SelectedValue="{Binding CameraRotationMode, ElementName=view1}" Header="CameraRotationMode"/>
             <pt:EnumMenuItem SelectedValue="{Binding CameraMode, ElementName=view1}" Header="CameraMode"/>
         </Menu>
-        <helix:HelixViewport3D x:Name="view1" CameraPath="{Binding ElementName=pathLines, Path=Points}" CameraMaximumLookDistance="1000">
+        <helix:HelixViewport3D x:Name="view1" ShowCoordinateSystem="True" CameraPath="{Binding ElementName=pathLines, Path=Points}" CameraMaximumLookDistance="1000">
             <helix:HelixViewport3D.DefaultCamera>
                 <PerspectiveCamera Position="100,100,100" LookDirection="-100,-100,-100" UpDirection="0,0,1" FieldOfView="61" NearPlaneDistance="0.001"/>
             </helix:HelixViewport3D.DefaultCamera>

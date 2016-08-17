@@ -32,7 +32,12 @@ namespace HelixToolkit.Wpf
         /// <summary>
         /// Orbits around a point and follows a fixed path when panning.
         /// </summary>
-        InspectPath
+        InspectPath,
+
+        /// <summary>
+        /// Orbits around a point and follows a plane when panning.
+        /// </summary>
+        InspectPlane,
 
     }
 }

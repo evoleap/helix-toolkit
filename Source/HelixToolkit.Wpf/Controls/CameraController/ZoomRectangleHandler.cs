@@ -95,7 +95,7 @@ namespace HelixToolkit.Wpf
                 return;
             }
 
-            if (this.CameraMode == CameraMode.InspectPath)
+            if (this.CameraMode == CameraMode.InspectPath || this.CameraMode == CameraMode.InspectPlane)
             {
                 return;
             }
