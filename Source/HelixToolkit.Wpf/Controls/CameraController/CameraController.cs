@@ -2426,6 +2426,11 @@ namespace HelixToolkit.Wpf
                 return;
             }
 
+            if (Keyboard.Modifiers != ModifierKeys.None)
+            {
+                return;
+            }
+
             if (this.ZoomAroundMouseDownPoint)
             {
                 var point = e.GetPosition(this);
