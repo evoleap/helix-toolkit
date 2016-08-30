@@ -27,6 +27,11 @@ namespace HelixToolkit.Wpf
         /// <summary>
         /// Using a virtual trackball.
         /// </summary>
-        Trackball
+        Trackball,
+
+        /// <summary>
+        /// Rotate the camera around a point
+        /// </summary>
+        Point
     }
 }

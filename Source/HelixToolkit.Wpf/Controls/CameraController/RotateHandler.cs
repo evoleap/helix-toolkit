@@ -131,10 +131,13 @@ namespace HelixToolkit.Wpf
                     this.RotateTrackball(p0, p1, rotateAround);
                     break;
                 case CameraRotationMode.Turntable:
-                    this.RotateTurntable(p1 - p0, rotateAround);
+                    this.RotateTurntable(p1 - p0, rotateAround, true);
                     break;
                 case CameraRotationMode.Turnball:
                     this.RotateTurnball(p0, p1, rotateAround);
+                    break;
+                case CameraRotationMode.Point:
+                    this.RotateTurntable(p1 - p0, rotateAround, false);
                     break;
             }
 
@@ -234,7 +237,7 @@ namespace HelixToolkit.Wpf
         /// <param name="rotateAround">
         /// The point to rotate around.
         /// </param>
-        public void RotateTurntable(Vector delta, Point3D rotateAround)
+        public void RotateTurntable(Vector delta, Point3D rotateAround, bool changeUpDirection)
         {
             Vector3D relativeTarget = rotateAround - this.CameraTarget;
             Vector3D relativePosition = rotateAround - this.CameraPosition;
@@ -261,8 +264,6 @@ namespace HelixToolkit.Wpf
             var m = new Matrix3D();
             m.Rotate(q);
 
-            Vector3D newUpDirection = m.Transform(this.CameraUpDirection);
-
             Vector3D newRelativeTarget = m.Transform(relativeTarget);
             Vector3D newRelativePosition = m.Transform(relativePosition);
 
@@ -275,7 +276,11 @@ namespace HelixToolkit.Wpf
                 this.CameraPosition = newPosition;
             }
 
-            this.CameraUpDirection = newUpDirection;
+            if (changeUpDirection)
+            {
+                Vector3D newUpDirection = m.Transform(this.CameraUpDirection);
+                this.CameraUpDirection = newUpDirection;
+            }
         }
 
         /// <summary>
@@ -321,6 +326,8 @@ namespace HelixToolkit.Wpf
                 case CameraRotationMode.Trackball:
                     break;
                 case CameraRotationMode.Turntable:
+                    break;
+                case CameraRotationMode.Point:
                     break;
                 case CameraRotationMode.Turnball:
                     this.InitTurnballRotationAxes(e.CurrentPosition);
