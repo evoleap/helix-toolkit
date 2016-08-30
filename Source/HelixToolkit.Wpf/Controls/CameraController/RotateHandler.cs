@@ -237,6 +237,9 @@ namespace HelixToolkit.Wpf
         /// <param name="rotateAround">
         /// The point to rotate around.
         /// </param>
+        /// <param name="changeUpDirection">
+        /// Whether to allow the turntable rotation to update the CameraUpdateDirection property.
+        /// </param>
         public void RotateTurntable(Vector delta, Point3D rotateAround, bool changeUpDirection)
         {
             Vector3D relativeTarget = rotateAround - this.CameraTarget;
