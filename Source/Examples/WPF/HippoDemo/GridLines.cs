@@ -428,36 +428,36 @@ namespace HippoDemo
             }
 
             var majorLines = new LinesVisual3D
-                {
-                    Color = this.MajorLineColor,
-                    Thickness = this.MajorLineThickness,
-                    Points = majorLinePoints,
-                    IsRendering = true
-                };
+            {
+                EmissiveBrush = new SolidColorBrush(this.MajorLineColor),
+                Thickness = this.MajorLineThickness,
+                Points = majorLinePoints,
+                IsRendering = true
+            };
 
             var minorLines = new LinesVisual3D
-                {
-                    Color = this.MinorLineColor,
-                    Thickness = this.MinorLineThickness,
-                    Points = minorLinePoints,
-                    IsRendering = true
-                };
+            {
+                EmissiveBrush = new SolidColorBrush(this.MinorLineColor),
+                Thickness = this.MinorLineThickness,
+                Points = minorLinePoints,
+                IsRendering = true
+            };
 
             var xlines = new LinesVisual3D
-                {
-                    Color = this.YAxisLineColor,
-                    Thickness = this.MajorLineThickness,
-                    Points = xlinePoints,
-                    IsRendering = true
-                };
+            {
+                EmissiveBrush = new SolidColorBrush(this.YAxisLineColor),
+                Thickness = this.MajorLineThickness,
+                Points = xlinePoints,
+                IsRendering = true
+            };
 
             var ylines = new LinesVisual3D
-                {
-                    Color = this.XAxisLineColor,
-                    Thickness = this.MajorLineThickness,
-                    Points = ylinePoints,
-                    IsRendering = true
-                };
+            {
+                EmissiveBrush = new SolidColorBrush(this.XAxisLineColor),
+                Thickness = this.MajorLineThickness,
+                Points = ylinePoints,
+                IsRendering = true
+            };
             this.Children.Add(majorLines);
             this.Children.Add(minorLines);
             this.Children.Add(xlines);
