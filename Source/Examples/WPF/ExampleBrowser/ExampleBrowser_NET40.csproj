@@ -20,20 +20,8 @@
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="3DTools">
-      <HintPath>..\..\..\..\Components\3DTools.dll</HintPath>
-    </Reference>
-    <Reference Include="Petzold.Media3D">
-      <HintPath>..\..\..\..\Components\Petzold.Media3D.dll</HintPath>
-    </Reference>
-    <Reference Include="Triangle">
-      <HintPath>..\..\..\..\Components\Triangle.dll</HintPath>
-    </Reference>
-    <Reference Include="WiimoteLib">
-      <HintPath>..\..\..\..\Components\WiimoteLib.dll</HintPath>
-    </Reference>
-    <PackageReference Include="NAudio" Version="1.7.1" />
-    <PackageReference Include="PropertyTools.Wpf" Version="2015.2.0" />
+    <PackageReference Include="NAudio" Version="2.2.1" />
+    <PackageReference Include="PropertyTools.Wpf" Version="3.1.0" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\..\..\GlobalAssemblyInfo.cs">
