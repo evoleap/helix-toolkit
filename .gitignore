@@ -199,3 +199,4 @@ FakesAssemblies/
 # Helix Toolkit specific files
 !Models/obj/
 !Models/obj/**/*.obj
+/Source/.vs
