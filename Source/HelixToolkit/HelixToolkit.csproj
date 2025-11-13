@@ -14,6 +14,13 @@
     <Copyright>Copyright (C) Helix Toolkit 2010-2014.</Copyright>
     <AssemblyVersion>2014.2.1.1</AssemblyVersion>
     <FileVersion>2014.2.1.1</FileVersion>
+    <!-- Disable auto-generation of assembly attributes to avoid conflicts with GlobalAssemblyInfo.cs -->
+    <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
+    <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
+    <GenerateAssemblyCopyrightAttribute>false</GenerateAssemblyCopyrightAttribute>
+    <GenerateAssemblyFileVersionAttribute>false</GenerateAssemblyFileVersionAttribute>
+    <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
+    <GenerateAssemblyVersionAttribute>false</GenerateAssemblyVersionAttribute>
   </PropertyGroup>
 
   <ItemGroup>
