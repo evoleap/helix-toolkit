@@ -17,7 +17,6 @@ resources:
       endpoint: evoleap
 
 jobs:
-
 - job: BuildArtifact
   variables:
     versionNumber: ''
@@ -27,7 +26,6 @@ jobs:
     verPrefix: ''
     verSuffix: ''
   steps:
-    
     - checkout: self
     - checkout: evoleapdevops
     - pwsh: Write-Host "##vso[task.setvariable variable=name;isOutput=true]$($env:BUILD_REPOSITORY_NAME.substring($env:BUILD_REPOSITORY_NAME.indexof('/') + 1))"
@@ -53,14 +51,15 @@ jobs:
       inputs:
         command: 'test'
         projects: '$(getRepo.name)/Source/HelixToolkit.Wpf_NET40.sln'
-        workingDirectory: '$(getRepo.name)/src'
+        workingDirectory: '$(getRepo.name)/Source'
         arguments: '-c Release /property:Version=$(symVer)'
       enabled: false
     - task: DotNetCoreCLI@2
       inputs:
         command: 'build'
         projects: '$(getRepo.name)/Source/HelixToolkit.Wpf_NET40.sln'
-        arguments: '-c Release'
+        workingDirectory: '$(getRepo.name)/Source'
+        arguments: '-c Release /property:Version=$(symVer)'
     - task: NuGetCommand@2
       inputs:
         command: 'push'
