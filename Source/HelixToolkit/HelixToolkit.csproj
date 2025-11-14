@@ -21,6 +21,8 @@
     <GenerateAssemblyFileVersionAttribute>false</GenerateAssemblyFileVersionAttribute>
     <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
     <GenerateAssemblyVersionAttribute>false</GenerateAssemblyVersionAttribute>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageId>evoleap.HelixToolkit</PackageId>
   </PropertyGroup>
 
   <ItemGroup>
