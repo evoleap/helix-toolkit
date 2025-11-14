@@ -1,0 +1,68 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+trigger:
+- master
+
+pool:
+  vmImage: windows-latest
+
+resources:
+  repositories:
+    - repository: evoleapdevops
+      type: github
+      name: evoleap/devops
+      endpoint: evoleap
+
+jobs:
+
+- job: BuildArtifact
+  variables:
+    versionNumber: ''
+    workingVersion: ''
+    symVer: ''
+    isRelease: $[eq(variables['Build.SourceBranch'], 'refs/heads/master')]
+    verPrefix: ''
+    verSuffix: ''
+  steps:
+    - checkout: self
+    - checkout: evoleapdevops
+    - pwsh: Write-Host "##vso[task.setvariable variable=name;isOutput=true]$($env:BUILD_REPOSITORY_NAME.substring($env:BUILD_REPOSITORY_NAME.indexof([System.IO.Path]::DirectorySeparatorChar) + 1))"
+      name: getRepo
+    - template: templates/get-working-version.yml@evoleapdevops
+      parameters:
+        source: '$(getRepo.name)/Version.txt'
+        dest: '$(getRepo.name)/WorkingVersion.txt'
+        var: 'workingVersion'
+        symVar: 'symVer'
+        repo: devops
+        isRelease: $(isRelease)
+        verPrefixVar: 'verPrefix'
+        verSuffixVar: 'verSuffix'
+    - task: NuGetAuthenticate@1
+    - task: DotNetCoreCLI@2
+      inputs:
+        command: 'restore'
+        projects: '$(getRepo.name)/Source/HelixToolkit.Wpf_NET40.sln'
+        feedsToUse: 'select'
+        vstsFeed: '4e2dc0fe-c532-420e-8889-18ca9bea1ff1'
+    - task: DotNetCoreCLI@2
+      inputs:
+        command: 'test'
+        workingDirectory: '$(getRepo.name)/src'
+        arguments: '-c Release /property:Version=$(symVer)'
+    - task: DotNetCoreCLI@2
+      inputs:
+        command: 'build'
+        workingDirectory: '$(getRepo.name)/src'
+        arguments: '-c Release /property:Version=$(symVer)'
+    - task: NuGetCommand@2
+      inputs:
+        command: 'push'
+        packagesToPush: '**/*.nupkg;!**/*.symbols.nupkg'
+        nuGetFeedType: 'internal'
+        publishVstsFeed: '4e2dc0fe-c532-420e-8889-18ca9bea1ff1'
+        versioningScheme: byEnvVar
+        versionEnvVar: 'symVer'
