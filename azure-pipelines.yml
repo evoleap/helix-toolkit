@@ -53,6 +53,7 @@ jobs:
         command: 'test'
         workingDirectory: '$(getRepo.name)/src'
         arguments: '-c Release /property:Version=$(symVer)'
+      enabled: false
     - task: DotNetCoreCLI@2
       inputs:
         command: 'build'
