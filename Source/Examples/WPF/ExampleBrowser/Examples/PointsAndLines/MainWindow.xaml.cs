@@ -18,13 +18,13 @@ namespace PointsAndLinesDemo
     using System.Windows.Media;
     using System.Windows.Media.Media3D;
 
-    using _3DTools;
+    //using _3DTools;
 
     using ExampleBrowser;
 
     using HelixToolkit.Wpf;
 
-    using Petzold.Media3D;
+    //using Petzold.Media3D;
 
     /// <summary>
     /// Interaction logic for the main window.
@@ -39,8 +39,8 @@ namespace PointsAndLinesDemo
 
         private LinesVisual3D linesVisual;
         private PointsVisual3D pointsVisual;
-        private ScreenSpaceLines3D screenSpaceLines;
-        private WireLines wireLines;
+        //private ScreenSpaceLines3D screenSpaceLines;
+        //private WireLines wireLines;
 
         private Point3DCollection points;
 
@@ -147,29 +147,29 @@ namespace PointsAndLinesDemo
                 this.pointsVisual = null;
             }
 
-            if (this.ShowScreenSpaceLines3D && this.screenSpaceLines == null)
-            {
-                this.screenSpaceLines = new ScreenSpaceLines3D { Color = Colors.Green };
-                View1.Children.Add(this.screenSpaceLines);
-            }
+            //if (this.ShowScreenSpaceLines3D && this.screenSpaceLines == null)
+            //{
+            //    this.screenSpaceLines = new ScreenSpaceLines3D { Color = Colors.Green };
+            //    View1.Children.Add(this.screenSpaceLines);
+            //}
 
-            if (!this.ShowScreenSpaceLines3D && this.screenSpaceLines != null)
-            {
-                View1.Children.Remove(this.screenSpaceLines);
-                this.screenSpaceLines = null;
-            }
+            //if (!this.ShowScreenSpaceLines3D && this.screenSpaceLines != null)
+            //{
+            //    View1.Children.Remove(this.screenSpaceLines);
+            //    this.screenSpaceLines = null;
+            //}
 
-            if (this.ShowWireLines && this.wireLines == null)
-            {
-                this.wireLines = new WireLines { Color = Colors.Pink };
-                View1.Children.Add(this.wireLines);
-            }
+            //if (this.ShowWireLines && this.wireLines == null)
+            //{
+            //    this.wireLines = new WireLines { Color = Colors.Pink };
+            //    View1.Children.Add(this.wireLines);
+            //}
 
-            if (!this.ShowWireLines && this.wireLines != null)
-            {
-                View1.Children.Remove(this.wireLines);
-                this.wireLines = null;
-            }
+            //if (!this.ShowWireLines && this.wireLines != null)
+            //{
+            //    View1.Children.Remove(this.wireLines);
+            //    this.wireLines = null;
+            //}
 
             if (this.Points == null || this.Points.Count != this.NumberOfPoints)
             {
@@ -186,15 +186,15 @@ namespace PointsAndLinesDemo
                 this.pointsVisual.Points = this.Points;
             }
 
-            if (this.screenSpaceLines != null)
-            {
-                this.screenSpaceLines.Points = this.Points;
-            }
+            //if (this.screenSpaceLines != null)
+            //{
+            //    this.screenSpaceLines.Points = this.Points;
+            //}
 
-            if (this.wireLines != null)
-            {
-                this.wireLines.Lines = this.Points;
-            }
+            //if (this.wireLines != null)
+            //{
+            //    this.wireLines.Lines = this.Points;
+            //}
         }
 
         private void ExitClick(object sender, RoutedEventArgs e)

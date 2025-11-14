@@ -9,13 +9,13 @@
 
 namespace ParticleSystemDemo
 {
-    using System.Windows;
-    using System.Windows.Media.Media3D;
-
     using ExampleBrowser;
-
     using PropertyTools;
     using PropertyTools.DataAnnotations;
+    using System;
+    using System.Linq.Expressions;
+    using System.Windows;
+    using System.Windows.Media.Media3D;
 
     /// <summary>
     /// Interaction logic for Window1.xaml
@@ -94,6 +94,12 @@ namespace ParticleSystemDemo
             {
                 this.SetValue(ref this.lifeTime, value, () => this.LifeTime);
             }
+        }
+
+        public void SetValue<T>(ref T thing, T value, Expression<Func<T>> property)
+        {
+            var propertyName = property.GetMemberInfo().Name;
+            this.SetValue(ref thing, value, propertyName);
         }
 
         [Category("Properties|Life")]

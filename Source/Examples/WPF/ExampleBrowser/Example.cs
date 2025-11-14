@@ -6,8 +6,11 @@
 
 namespace ExampleBrowser
 {
+    using FractalDemo;
     using System;
     using System.Diagnostics;
+    using System.Linq.Expressions;
+    using System.Reflection;
     using System.Windows;
     using System.Windows.Media;
     using System.Windows.Media.Imaging;
@@ -51,5 +54,37 @@ namespace ExampleBrowser
         {
             return Activator.CreateInstance(this.MainWindowType) as Window;
         }
+    }
+
+    public static class ExampleExtensions
+    {
+        /// <summary>
+        /// Converts an expression into a <see cref="MemberInfo"/>.
+        /// </summary>
+        /// <param name="expression">The expression to convert.</param>
+        /// <returns>The member info.</returns>
+        public static MemberInfo GetMemberInfo(this System.Linq.Expressions.Expression expression)
+        {
+            var lambda = (LambdaExpression)expression;
+
+            MemberExpression memberExpression;
+            if (lambda.Body is UnaryExpression)
+            {
+                var unaryExpression = (UnaryExpression)lambda.Body;
+                memberExpression = (MemberExpression)unaryExpression.Operand;
+            }
+            else
+            {
+                memberExpression = (MemberExpression)lambda.Body;
+            }
+
+            return memberExpression.Member;
+        }
+
+        //public static void SetValue<T>(this PropertyTools.Observable observable, ref T thing, T value, Expression<Func<T>> property)
+        //{
+        //    var propertyName = property.GetMemberInfo().Name;
+        //    observable.SetValue(ref thing, value, propertyName);
+        //}
     }
 }

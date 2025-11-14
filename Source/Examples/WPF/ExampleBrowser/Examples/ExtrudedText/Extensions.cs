@@ -10,8 +10,8 @@
 
     using HelixToolkit.Wpf;
 
-    using TriangleNet.Geometry;
-    using TriangleNet.Meshing;
+    //using TriangleNet.Geometry;
+    //using TriangleNet.Meshing;
 
     using LineSegment = System.Windows.Media.LineSegment;
     using Point = System.Windows.Point;
@@ -23,7 +23,7 @@
             var outlineList = GetTextOutlines(text, font, fontStyle, fontWeight, fontSize);
 
             // Build the polygon to mesh (using Triangle.NET to triangulate)
-            var polygon = new TriangleNet.Geometry.Polygon();
+            //var polygon = new TriangleNet.Geometry.Polygon();
             int marker = 0;
 
             foreach (var outlines in outlineList)
@@ -34,14 +34,14 @@
                 {
                     var outline = outlines[i];
                     var isHole = i != outlines.Count - 1 && IsPointInPolygon(outerOutline, outline[0]);
-                    polygon.AddContour(outline.Select(p => new Vertex(p.X, p.Y)), marker++, isHole);
+                    //polygon.AddContour(outline.Select(p => new Vertex(p.X, p.Y)), marker++, isHole);
                     builder.AddExtrudedSegments(outline.ToSegments().ToList(), textDirection, p0, p1);
                 }
             }
 
-            var mesher = new GenericMesher();
-            var options = new ConstraintOptions();
-            var mesh = mesher.Triangulate(polygon, options);
+            //var mesher = new GenericMesher();
+            //var options = new ConstraintOptions();
+            //var mesh = mesher.Triangulate(polygon, options);
 
             var u = textDirection;
             u.Normalize();
@@ -50,25 +50,25 @@
             var v = Vector3D.CrossProduct(z, u);
 
             // Convert the triangles
-            foreach (var t in mesh.Triangles)
-            {
-                var v0 = t.GetVertex(0);
-                var v1 = t.GetVertex(1);
-                var v2 = t.GetVertex(2);
+            //foreach (var t in mesh.Triangles)
+            //{
+            //    var v0 = t.GetVertex(0);
+            //    var v1 = t.GetVertex(1);
+            //    var v2 = t.GetVertex(2);
 
-                // Add the top triangle.
-                // Project the X/Y vertices onto a plane defined by textdirection, p0 and p1.                
-                builder.AddTriangle(v0.Project(p0, u, v, z, 1), v1.Project(p0, u, v, z, 1), v2.Project(p0, u, v, z, 1));
+            //    // Add the top triangle.
+            //    // Project the X/Y vertices onto a plane defined by textdirection, p0 and p1.                
+            //    builder.AddTriangle(v0.Project(p0, u, v, z, 1), v1.Project(p0, u, v, z, 1), v2.Project(p0, u, v, z, 1));
                 
-                // Add the bottom triangle.
-                builder.AddTriangle(v2.Project(p0, u, v, z, 0), v1.Project(p0, u, v, z, 0), v0.Project(p0, u, v, z, 0));
-            }
+            //    // Add the bottom triangle.
+            //    builder.AddTriangle(v2.Project(p0, u, v, z, 0), v1.Project(p0, u, v, z, 0), v0.Project(p0, u, v, z, 0));
+            //}
         }
 
-        public static Point3D Project(this Vertex v, Point3D p0, Vector3D x, Vector3D y, Vector3D z, double h)
-        {
-            return p0 + x * v.X - y * v.Y + z * h;
-        }
+        //public static Point3D Project(this Vertex v, Point3D p0, Vector3D x, Vector3D y, Vector3D z, double h)
+        //{
+        //    return p0 + x * v.X - y * v.Y + z * h;
+        //}
 
         public static double AreaOfSegment(this Point[] segment)
         {
