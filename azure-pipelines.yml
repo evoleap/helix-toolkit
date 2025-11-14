@@ -27,6 +27,7 @@ jobs:
     verPrefix: ''
     verSuffix: ''
   steps:
+    
     - checkout: self
     - checkout: evoleapdevops
     - pwsh: Write-Host "##vso[task.setvariable variable=name;isOutput=true]$($env:BUILD_REPOSITORY_NAME.substring($env:BUILD_REPOSITORY_NAME.indexof('/') + 1))"
