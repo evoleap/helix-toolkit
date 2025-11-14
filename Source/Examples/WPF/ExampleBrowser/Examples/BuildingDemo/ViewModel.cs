@@ -6,9 +6,11 @@
 
 namespace BuildingDemo
 {
-    using System.Windows.Media.Media3D;
-
+    using ExampleBrowser;
     using PropertyTools;
+    using System;
+    using System.Linq.Expressions;
+    using System.Windows.Media.Media3D;
 
     public class ViewModel : Observable
     {
@@ -30,6 +32,12 @@ namespace BuildingDemo
         public void Select(Visual3D visual)
         {
             this.SelectedObject = visual;
+        }
+
+        public void SetValue<T>(ref T thing, T value, Expression<Func<T>> property)
+        {
+            var propertyName = property.GetMemberInfo().Name;
+            this.SetValue(ref thing, value, propertyName);
         }
     }
 }

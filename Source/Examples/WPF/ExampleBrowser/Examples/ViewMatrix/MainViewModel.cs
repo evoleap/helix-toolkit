@@ -6,11 +6,12 @@
 
 namespace ViewMatrixDemo
 {
-    using System.Windows.Media.Media3D;
-
+    using ExampleBrowser;
     using HelixToolkit.Wpf;
-
     using PropertyTools;
+    using System;
+    using System.Linq.Expressions;
+    using System.Windows.Media.Media3D;
 
     public class MainViewModel : Observable
     {
@@ -74,6 +75,18 @@ namespace ViewMatrixDemo
                 this.SetValue(ref this.projectionMatrix, value, () => this.ProjectionMatrix);
                 this.RaisePropertyChanged(() => this.ProjectionTransform);
             }
+        }
+
+        public void SetValue<T>(ref T thing, T value, Expression<Func<T>> property)
+        {
+            var propertyName = property.GetMemberInfo().Name;
+            this.SetValue(ref thing, value, propertyName);
+        }
+
+        public void RaisePropertyChanged<T>(Expression<Func<T>> property)
+        {
+            var propertyName = property.GetMemberInfo().Name;
+            this.RaisePropertyChanged(propertyName);
         }
 
         public Matrix3D ViewMatrix

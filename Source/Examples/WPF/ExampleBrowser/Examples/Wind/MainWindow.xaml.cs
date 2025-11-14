@@ -18,7 +18,7 @@ namespace WindDemo
 
     using HelixToolkit.Wpf;
 
-    using WiimoteLib;
+    //using WiimoteLib;
 
     /// <summary>
     /// Interaction logic for MainWindow.xaml
@@ -76,72 +76,72 @@ namespace WindDemo
             Closed += MainWindowClosed;
         }
 
-        private Wiimote wm;
+        //private Wiimote wm;
 
         void MainWindowClosed(object sender, EventArgs e)
         {
-            try
-            {
-                if (wm != null)
-                    wm.Disconnect();
-            }
-            catch (Exception ex)
-            {
-                Trace.WriteLine(ex);
-            }
+            //try
+            //{
+            //    if (wm != null)
+            //        wm.Disconnect();
+            //}
+            //catch (Exception ex)
+            //{
+            //    Trace.WriteLine(ex);
+            //}
         }
 
         void MainWindowLoaded(object sender, System.Windows.RoutedEventArgs e)
         {
-            try
-            {
-                wm = new Wiimote();
-                wm.WiimoteChanged += OnWiimoteChanged;
-                wm.Connect();
-                wm.SetReportType(InputReport.IRAccel, true);
-                wm.SetLEDs(false, false, false, false);
-            }
-            catch
-            {
-                wm = null;
-            }
+            //try
+            //{
+            //    wm = new Wiimote();
+            //    wm.WiimoteChanged += OnWiimoteChanged;
+            //    wm.Connect();
+            //    wm.SetReportType(InputReport.IRAccel, true);
+            //    wm.SetLEDs(false, false, false, false);
+            //}
+            //catch
+            //{
+            //    wm = null;
+            //}
         }
 
-        private void OnWiimoteChanged(object sender, WiimoteChangedEventArgs e)
+        private void OnWiimoteChanged(object sender, EventArgs e)
         {
-            HeadTracking(e.WiimoteState.IRState);
+            //HeadTracking(e.WiimoteState.IRState);
         }
 
         // headtracking 'light'
         // computes the angles to the observer around the camera up and right directions
         // also calculates the distance between two IR points - used for scaling
         // todo: take screen distance into account
-        private void HeadTracking(IRState irState)
-        {
-            if (irState.IRSensors[0].Found)
-            {
-                var p0 = irState.IRSensors[0].RawPosition;
-                double mx = p0.X;
-                double my = p0.Y;
-                double scale = 1;
+        //private void HeadTracking(IRState irState)
+        //{
+        //    if (irState.IRSensors[0].Found)
+        //    {
+        //        var p0 = irState.IRSensors[0].RawPosition;
+        //        double mx = p0.X;
+        //        double my = p0.Y;
+        //        double scale = 1;
 
-                if (irState.IRSensors[1].Found)
-                {
-                    var p1 = irState.IRSensors[1].RawPosition;
-                    double dx = p0.X - p1.X;
-                    double dy = p0.Y - p1.Y;
-                    double d = Math.Sqrt(dx * dx + dy * dy);
-                    mx = (p0.X + p1.X) * 0.5;
-                    my = (p0.Y + p1.Y) * 0.5;
-                    scale = d / 200.0;
-                }
-                double theta = 20.0 * (mx - 512) / 512;
-                double phi = 20.0 * (my - 384) / 384;
-                Dispatcher.BeginInvoke(new Action(() => SetTransform(scale, theta, phi)));
-            }
-            //else
-            //    Dispatcher.BeginInvoke(new Action(() => SetTransform(1, 0, 0)));
-        }
+        //        if (irState.IRSensors[1].Found)
+        //        {
+        //            var p1 = irState.IRSensors[1].RawPosition;
+        //            double dx = p0.X - p1.X;
+        //            double dy = p0.Y - p1.Y;
+        //            double d = Math.Sqrt(dx * dx + dy * dy);
+        //            mx = (p0.X + p1.X) * 0.5;
+        //            my = (p0.Y + p1.Y) * 0.5;
+        //            scale = d / 200.0;
+        //        }
+        //        double theta = 20.0 * (mx - 512) / 512;
+        //        double phi = 20.0 * (my - 384) / 384;
+        //        Dispatcher.BeginInvoke(new Action(() => SetTransform(scale, theta, phi)));
+        //    }
+        //    //else
+        //    //    Dispatcher.BeginInvoke(new Action(() => SetTransform(1, 0, 0)));
+        //}
 
         private void SetTransform(double scale, double theta, double phi)
         {

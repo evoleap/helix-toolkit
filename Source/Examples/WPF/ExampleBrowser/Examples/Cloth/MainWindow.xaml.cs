@@ -50,12 +50,15 @@ namespace ClothDemo
 
         void MainWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            integratorThread.Abort();
+            _continue = false;
+            integratorThread.Join();
         }
+
+        bool _continue = true;
 
         private void IntegrationWorker()
         {
-            while (true)
+            while (_continue)
             {
                 double dt = 1.0 * watch.ElapsedTicks / Stopwatch.Frequency;
                 watch.Restart();

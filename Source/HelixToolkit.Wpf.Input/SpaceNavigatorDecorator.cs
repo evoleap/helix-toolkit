@@ -9,12 +9,14 @@
 
 namespace HelixToolkit.Wpf.Input
 {
+    using System;
     using System.Diagnostics;
+    using System.Linq;
     using System.Runtime.InteropServices;
     using System.Windows;
     using System.Windows.Controls;
 
-    using TDx.TDxInput;
+    using HidLibrary;
 
     /// <summary>
     /// Space navigator type enumeration.
@@ -128,15 +130,17 @@ namespace HelixToolkit.Wpf.Input
         public static readonly DependencyProperty ZoomSensivityProperty = DependencyProperty.Register(
             "ZoomSensitivity", typeof(double), typeof(SpaceNavigatorDecorator), new UIPropertyMetadata(1.0));
 
+        // Added a bunch of CoPilot generated code for HidDevice to compile, but never tested it. Don't have the devices.
+
         /// <summary>
         /// The _input.
         /// </summary>
-        private Device _input;
+        private HidDevice _input;
 
         /// <summary>
         /// The _sensor.
         /// </summary>
-        private Sensor _sensor;
+        //private Sensor _sensor;
 
         /// <summary>
         /// Initializes a new instance of the <see cref = "SpaceNavigatorDecorator" /> class.
@@ -336,7 +340,7 @@ namespace HelixToolkit.Wpf.Input
         {
             if (this._input != null)
             {
-                this._input.Disconnect();
+                this._input.CloseDevice();
             }
 
             this._input = null;
@@ -360,16 +364,122 @@ namespace HelixToolkit.Wpf.Input
         {
             try
             {
-                this._input = new Device();
-                this._sensor = this._input.Sensor;
-                this._input.DeviceChange += this.input_DeviceChange;
-                this._sensor.SensorInput += this.Sensor_SensorInput;
-                this._input.Connect();
+                this._input = HidLibrary.HidDevices.Enumerate().FirstOrDefault();
+                if (_input != null)
+                {
+                    _input.OpenDevice();
+                    _input.Inserted += Input_Inserted;
+                    _input.Removed += Input_Removed;
+
+                    _input.MonitorDeviceEvents = true;
+
+                    _input.ReadReport(OnReport);
+                    _attached = _input.IsConnected;
+                }
             }
             catch (COMException e)
             {
                 Trace.WriteLine(e.Message);
             }
+        }
+
+        private void OnReport(HidReport report)
+        {
+
+
+
+            if (_attached == false) { return; }
+            if (report.Data.Length >= 6)
+            {
+                // Parse based on Report ID
+                switch (report.ReportId)
+                {
+                    case 0x01: // Translation data (X, Y, Z movement)
+                        {
+                            short x = BitConverter.ToInt16(report.Data, 0);
+                            short y = BitConverter.ToInt16(report.Data, 2);
+                            short z = BitConverter.ToInt16(report.Data, 4);
+
+                            ProcessTranslation(x, y, z);
+                            break;
+                        }
+                    case 0x02: // Rotation data (X, Y, Z rotation)
+                        {
+                            short rx = BitConverter.ToInt16(report.Data, 0);
+                            short ry = BitConverter.ToInt16(report.Data, 2);
+                            short rz = BitConverter.ToInt16(report.Data, 4);
+
+                            ProcessRotation(rx, ry, rz);
+                            break;
+                        }
+                    case 0x03: // Button data
+                        {
+                            byte button1 = report.Data[0];
+                            byte button2 = report.Data[1];
+                            ProcessButtons(button1, button2);
+                            break;
+                        }
+                }
+            }
+
+            _input.ReadReport(OnReport);
+        }
+
+        private void ProcessTranslation(short x, short y, short z)
+        {
+            if (this.Controller == null) return;
+
+            // Scale factor - typical range is -350 to +350
+            const double scaleFactor = 0.001;
+
+            if (this.ZoomMode == SpaceNavigatorZoomMode.InOut)
+            {
+                this.Controller.AddZoomForce(this.ZoomSensitivity * scaleFactor * z);
+            }
+
+            if (this.ZoomMode == SpaceNavigatorZoomMode.UpDown)
+            {
+                this.Controller.AddZoomForce(this.ZoomSensitivity * scaleFactor * y);
+                if (this.IsPanEnabled)
+                {
+                    this.Controller.AddPanForce(
+                        this.Sensitivity * 0.03 * scaleFactor * x,
+                        this.Sensitivity * 0.03 * scaleFactor * z);
+                }
+            }
+        }
+
+        private void ProcessRotation(short rx, short ry, short rz)
+        {
+            if (this.Controller == null) return;
+
+            // Scale factor - typical range is -350 to +350
+            const double scaleFactor = 1.0;
+
+            this.Controller.AddRotateForce(
+                this.Sensitivity * scaleFactor * ry,
+                this.Sensitivity * scaleFactor * rx);
+        }
+
+        private void ProcessButtons(byte button1, byte button2)
+        {
+            // Button handling - customize as needed
+            // Typical SpaceNavigator has 2 buttons
+            bool leftButton = (button1 & 0x01) != 0;
+            bool rightButton = (button1 & 0x02) != 0;
+
+            // You can add button-specific functionality here
+        }
+        bool _attached = false;
+        private void Input_Removed()
+        {
+            _attached = false;
+        }
+
+        private void Input_Inserted()
+        {
+            _attached = true;
+            _input.ReadReport(OnReport);
         }
 
         // todo...
@@ -395,32 +505,32 @@ namespace HelixToolkit.Wpf.Input
         /// <summary>
         /// The sensor_ sensor input.
         /// </summary>
-        private void Sensor_SensorInput()
-        {
-            if (this.Controller == null)
-            {
-                return;
-            }
+        //private void Sensor_SensorInput()
+        //{
+        //    if (this.Controller == null)
+        //    {
+        //        return;
+        //    }
 
-            this.Controller.AddRotateForce(
-                this.Sensitivity * this._sensor.Rotation.Y, this.Sensitivity * this._sensor.Rotation.X);
+        //    this.Controller.AddRotateForce(
+        //        this.Sensitivity * this._sensor.Rotation.Y, this.Sensitivity * this._sensor.Rotation.X);
 
-            if (this.ZoomMode == SpaceNavigatorZoomMode.InOut)
-            {
-                this.Controller.AddZoomForce(this.ZoomSensitivity * 0.001 * this._input.Sensor.Translation.Z);
-            }
+        //    if (this.ZoomMode == SpaceNavigatorZoomMode.InOut)
+        //    {
+        //        this.Controller.AddZoomForce(this.ZoomSensitivity * 0.001 * this._input.Sensor.Translation.Z);
+        //    }
 
-            if (this.ZoomMode == SpaceNavigatorZoomMode.UpDown)
-            {
-                this.Controller.AddZoomForce(this.ZoomSensitivity * 0.001 * this._sensor.Translation.Y);
-                if (this.IsPanEnabled)
-                {
-                    this.Controller.AddPanForce(
-                        this.Sensitivity * 0.03 * this._sensor.Translation.X,
-                        this.Sensitivity * 0.03 * this._sensor.Translation.Z);
-                }
-            }
-        }
+        //    if (this.ZoomMode == SpaceNavigatorZoomMode.UpDown)
+        //    {
+        //        this.Controller.AddZoomForce(this.ZoomSensitivity * 0.001 * this._sensor.Translation.Y);
+        //        if (this.IsPanEnabled)
+        //        {
+        //            this.Controller.AddPanForce(
+        //                this.Sensitivity * 0.03 * this._sensor.Translation.X,
+        //                this.Sensitivity * 0.03 * this._sensor.Translation.Z);
+        //        }
+        //    }
+        //}
 
         /// <summary>
         /// The input_ device change.
@@ -428,13 +538,13 @@ namespace HelixToolkit.Wpf.Input
         /// <param name="reserved">
         /// The reserved.
         /// </param>
-        private void input_DeviceChange(int reserved)
-        {
-            this.IsConnected = true;
-            this.Type = (SpaceNavigatorType)this._input.Type;
-            this.NavigatorName = this.Type.ToString();
-            this.RaiseConnectionChanged();
-        }
+        //private void input_DeviceChange(int reserved)
+        //{
+        //    this.IsConnected = true;
+        //    this.Type = (SpaceNavigatorType)this._input.Type;
+        //    this.NavigatorName = this.Type.ToString();
+        //    this.RaiseConnectionChanged();
+        //}
 
     }
 }

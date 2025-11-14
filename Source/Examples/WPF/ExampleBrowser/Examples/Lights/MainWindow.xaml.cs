@@ -9,14 +9,13 @@
 
 namespace LightsDemo
 {
+    using ExampleBrowser;
+    using HelixToolkit.Wpf;
+    using PropertyTools;
+    using System;
+    using System.Linq.Expressions;
     using System.Windows.Media;
     using System.Windows.Media.Media3D;
-
-    using ExampleBrowser;
-
-    using HelixToolkit.Wpf;
-
-    using PropertyTools;
 
     /// <summary>
     /// Interaction logic for MainWindow.xaml
@@ -104,6 +103,18 @@ namespace LightsDemo
             {
                 get { return this.headlightVerticalPosition; }
                 set { this.SetValue(ref this.headlightVerticalPosition, value, () => this.HeadlightVerticalPosition); RaisePropertyChanged(() => this.Headlight1); RaisePropertyChanged(() => this.Headlight2); }
+            }
+
+            public void SetValue<T>(ref T thing, T value, Expression<Func<T>> property)
+            {
+                var propertyName = property.GetMemberInfo().Name;
+                this.SetValue(ref thing, value, propertyName);
+            }
+
+            public void RaisePropertyChanged<T>(Expression<Func<T>> property)
+            {
+                var propertyName = property.GetMemberInfo().Name;
+                this.RaisePropertyChanged(propertyName);
             }
 
             public Material GreenMaterial
