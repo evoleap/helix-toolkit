@@ -60,8 +60,7 @@ jobs:
       inputs:
         command: 'build'
         projects: '$(getRepo.name)/Source/HelixToolkit.Wpf_NET40.sln'
-        workingDirectory: '$(getRepo.name)/src'
-        arguments: '-c Release /property:Version=$(symVer)'
+        arguments: '-c Release'
     - task: NuGetCommand@2
       inputs:
         command: 'push'
