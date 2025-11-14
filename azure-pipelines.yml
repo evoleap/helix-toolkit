@@ -51,12 +51,14 @@ jobs:
     - task: DotNetCoreCLI@2
       inputs:
         command: 'test'
+        projects: '$(getRepo.name)/Source/HelixToolkit.Wpf_NET40.sln'
         workingDirectory: '$(getRepo.name)/src'
         arguments: '-c Release /property:Version=$(symVer)'
       enabled: false
     - task: DotNetCoreCLI@2
       inputs:
         command: 'build'
+        projects: '$(getRepo.name)/Source/HelixToolkit.Wpf_NET40.sln'
         workingDirectory: '$(getRepo.name)/src'
         arguments: '-c Release /property:Version=$(symVer)'
     - task: NuGetCommand@2
